@@ -49,7 +49,7 @@ async function processAsset(asset) {
             for (const alert of asset.alerts) {
                 let formattedEval = replaceAll(replaceAll(alert.eval, "{current}", currentValue), "{last}", lastValue);
                 let result = evaluate(formattedEval);
-                if (result && (asset.lastNotificationDate == undefined || asset.lastNotificationDate + alert.delay < currentTime)) {
+                if (result && (asset.lastNotificationDate == undefined || asset.lastNotificationDate + alert.cooldown < currentTime)) {
                     sendMessage(alert.message);
                     asset.lastNotificationDate = currentTime;
                 }
