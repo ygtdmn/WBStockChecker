@@ -34,6 +34,8 @@ async function start() {
 }
 
 async function processAsset(asset) {
+    let lastNotificationDateMap = {};
+
     while (true) {
         await delay(1000);
         try {
@@ -49,15 +51,16 @@ async function processAsset(asset) {
             for (const alert of asset.alerts) {
                 let formattedEval = replaceAll(replaceAll(alert.eval, "{current}", currentValue), "{last}", lastValue);
                 let result = evaluate(formattedEval);
-                if (result && (alert.lastNotificationDate == undefined || alert.lastNotificationDate + alert.cooldown < currentTime)) {
-                    sendMessage(alert.message);
-                    alert.lastNotificationDate = currentTime;
+                if (result) {
+                    let shouldSendNotif = lastNotificationDateMap[alert] == undefined || parseInt(lastNotificationDateMap[alert]) + parseInt(alert.cooldown) < currentTime;
+                    if (shouldSendNotif) {
+                        sendMessage(alert.message);
+                        lastNotificationDateMap[alert] = currentTime;
+                    }
                 }
             }
 
-            console.log(
-                `[${moment().format(config.dateFormat)}] ${asset.symbol} processed. Current: ${roundTo15(currentValue)} - Last: ${roundTo15(lastValue)}`
-            );
+            console.log(`[${moment().format(config.dateFormat)}] ${asset.symbol} processed. Current: ${roundTo15(currentValue)} - Last: ${roundTo15(lastValue)}`);
         } catch (e) {
             console.error(`[${moment().format(config.dateFormat)}] ${asset?.symbol} couldn't processed! Error: ${e}`);
         }
