@@ -15,12 +15,12 @@ export default {
                 {
                     message: "IBM lost value compared to yesterday!",
                     eval: "{current} < {last}",
-                    delay: "60",
+                    cooldown: "60",
                 },
                 {
                     message: "IBM gained more than 8% value!",
                     eval: "(({current} - {last}) / {last}) * 100 > 8",
-                    delay: "86400",
+                    cooldown: "86400",
                 },
             ],
         },
@@ -34,12 +34,12 @@ export default {
                 {
                     message: "DOT is below 40!",
                     eval: "{current} < 40",
-                    delay: "60",
+                    cooldown: "60",
                 },
                 {
                     message: "DOT is above 420.69!'",
                     eval: "{current} > 420.69",
-                    delay: "10",
+                    cooldown: "10",
                 },
             ],
         },
